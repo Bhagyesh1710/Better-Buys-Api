@@ -1,68 +1,75 @@
 <?php
 
-define('Host','localhost');
-define('USER_NAME','root');
-define('PASSWORD','');
-define('DB_NAME','better_buys');
+define('HOST', 'localhost');
+define('USER_NAME', 'root');
+define('PASSWORD', '');
+define('DB_NAME', 'better_buys');
 
-//
-
-class Database{
+// class DB start
+class Database
+{
     private $connection;
 
-    //Constructor
-    public __construc(){
+    // Constructor
+    public function __construct()
+    {
         $this->open_db_connection();
     }
-    
-    //Create Connection with DB
-    public function open_db_connection(){
-        $this->connection = mysqli_connect(HOST, USER_NAME, PASSWORD,DB_NAME);
-        
-        if(mysqli_connect_error()){
-            die('Connection Error:',mysqli_connect_error());
-        }
+    // Creating connection with db
+    public function open_db_connection()
+    {
+        $this->connection = mysqli_connect(HOST, USER_NAME, PASSWORD, DB_NAME);
 
+        if (mysqli_connect_error()) {
+            die('Connection Error: '.mysqli_connect_error());
+        }
+        
     }
-    
-    //Executing Sql Query
-    public function query($sql){
+
+    // Running SQL query on db
+    public function query($sql)
+    {
         $result = $this->connection->query($sql);
-        if(!$result){
-            die('Query Fails:',$sql);
+
+        if (!$result) {
+            die('Query fails : '.$sql);
         }
 
         return $result;
     }
 
-    //Fetching List of data from the sql query result
-    public function fetch_array($result){
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                $result_array[] = $row;
+    // Getting list of all rows
+    public function fetch_array($result)
+    {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $resultarray[] = $row;
             }
-            return $result_array;
+            return $resultarray;
         }
     }
 
-    //Fetching single row pf data from the sql query
-    public function fetch_row($result){
-        if($result->num_rows > 0)
-        return $result->fetch_assoc();
+    // Getting only 1 row
+    public function fetch_row($result)
+    {
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
     }
 
-    //Check Proper format of data
-    public function escape_value($value){
-        return $this->connection->real_escape_string($value);
+    // Checking if string is in proper format
+    public function escape_value($value)
+    {
+        $value = $this->connection->real_escape_string($value);
+        return $value;
     }
 
-    //Close Connection the sql
-    public function close_connection(){
+    // Closing connection
+    public function close_connection()
+    {
         $this->connection->close();
     }
-
-
-}
-
+} // Class ends
 
 $database = new Database();
